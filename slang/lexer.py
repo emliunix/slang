@@ -1,13 +1,13 @@
 import re
 from typing import List
 
-RE_LAM = re.compile(R"^\\")
-RE_VAR = re.compile(R"^\w+")
-RE_DOT = re.compile(R"^\.")
-RE_COLON = re.compile(R"^:")
-RE_LPAREN = re.compile(R"^\(")
-RE_RPAREN = re.compile(R"^\)")
-RE_UNIT = re.compile(R"^0")
+RE_LAM = re.compile(R"\\")
+RE_VAR = re.compile(R"\w+")
+RE_DOT = re.compile(R"\.")
+RE_COLON = re.compile(R":")
+RE_LPAREN = re.compile(R"\(")
+RE_RPAREN = re.compile(R"\)")
+RE_UNIT = re.compile(R"0")
 RE_BLANK = re.compile(R"\s+")
 
 class Token(object):
@@ -39,7 +39,7 @@ class VAR(Token):
         else:
             return False
 
-def parse(s: str) -> List[Token]:
+def lex(s: str) -> List[Token]:
     tokens : List[Token] = []
     r = None
     while s != "":
