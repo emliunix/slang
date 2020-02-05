@@ -1,3 +1,4 @@
+from slang.slr_impl import apply_tranx
 from unittest.case import TestCase
 from slang.slr import Symbol, grammar, EOF, Terminal, NonTerminal, print_parsed
 
@@ -26,14 +27,16 @@ class TestGrammar(TestCase):
     def test_grammar(self):
         arith = ["34", "+", "(", "12", "x", "(", "88", "+", "1", ")", ")"]
         g = grammar([
-            (G, [S, EOF]),
-            (S, [S, PLUS, P]),
-            (S, [P]),
-            (P, [P, MUL, V]),
-            (P, [V]),
-            (V, [LPAREN, S, RPAREN]),
-            (V, [VAL]),
-        ], ArithMatcher())
+            (G, [S, EOF], lambda p: p[0]),
+            (S, [S, PLUS, P], lambda p: ("+", p[0], p[2])),
+            (S, [P], lambda p: p[0]),
+            (P, [P, MUL, V], lambda p: ("x", p[0], p[2])),
+            (P, [V], lambda p: p[0]),
+            (V, [LPAREN, S, RPAREN], lambda p: p[1]),
+            (V, [VAL], lambda p: int(p[0])),
+        ], [], ArithMatcher())
         g.print_states()
         g.print_parsing_table()
-        print_parsed(g.parse(iter(arith)))
+        res = g.parse(iter(arith))
+        # print_parsed(res)
+        assert apply_tranx(res) == ("+", 34, ("x", 12, ("+", 88, 1)))
