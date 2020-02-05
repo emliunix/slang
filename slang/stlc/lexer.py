@@ -2,7 +2,7 @@ import re
 from typing import List
 
 RE_LAM = re.compile(R"\\")
-RE_VAR = re.compile(R"\w+")
+RE_VAR = re.compile(R"[a-zA-Z]+")
 RE_DOT = re.compile(R"\.")
 RE_COLON = re.compile(R":")
 RE_LPAREN = re.compile(R"\(")
