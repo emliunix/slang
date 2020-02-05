@@ -174,7 +174,7 @@ def _compute_follows(
                             follows.add(sym2)
                         elif isinstance(sym2, NonTerminal):
                             follows.update(firsts_map[sym2])
-                    else:
+                    elif r.symbol != nt:
                         follows.update(_go(r.symbol))
         nts_follows[nt] = follows
         return list(set(follows))
