@@ -1,10 +1,11 @@
+from slang.stlc.syntax import UnitTy
 from ..slr import (
     EOF, Symbol, Terminal, NonTerminal,
     grammar
 )
 
-from ..lexer import Token as STLC_Token
-from ..lexer import (
+from .lexer import Token as STLC_Token
+from .lexer import (
     LAM,
     DOT,
     COLON,
@@ -33,7 +34,7 @@ def mk_grammar():
 
     rules = [
         (S, [E, EOF], lambda e,_: e),
-        (E, [TLAM, TVAR, TDOT, E1], lambda _1,v,_2,t: Syn.Lam(v.name, t)),
+        (E, [TLAM, TVAR, TDOT, E1], lambda _1,v,_2,t: Syn.Lam(v.name, UnitTy(), t)),
         (E, [E1], identity),
         (E1, [E1, E2], lambda e1,e2: Syn.App(e1, e2)),
         (E1, [E2], identity),
