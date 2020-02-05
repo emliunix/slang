@@ -1,6 +1,10 @@
 from dataclasses import dataclass
+from typing import Tuple, Union
 
 class Term(object):
+    pass
+
+class Ty(object):
     pass
 
 @dataclass
@@ -14,6 +18,7 @@ class Var(Term):
 @dataclass
 class Lam(Term):
     var: str
+    ty: Ty
     term: Term
 
 @dataclass
@@ -22,14 +27,21 @@ class App(Term):
     arg: Term
 
 @dataclass
-class _Unit(Term):
+class Unit(Term):
     pass
 
-Unit = _Unit()
+@dataclass
+class Arrow(Ty):
+    src: Ty
+    dst: Ty
+
+@dataclass
+class UnitTy(Ty):
+    pass
 
 def to_dbi(t: Term):
-    vars = ["u"]
-    
+    vars = []
+
     def rfind(vs, n):
         len_vs = len(vs)
         for i in range(len_vs):
@@ -46,7 +58,7 @@ def to_dbi(t: Term):
             vars.append(t.var)
             term = go(t.term)
             vars.pop()
-            return Lam(t.var, term)
+            return Lam(t.var, t.ty, term)
         else:
             raise Exception(F"Unknown term type: {type(t)}")
     return go(t)

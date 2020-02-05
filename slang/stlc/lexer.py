@@ -9,6 +9,7 @@ RE_LPAREN = re.compile(R"\(")
 RE_RPAREN = re.compile(R"\)")
 RE_UNIT = re.compile(R"0")
 RE_BLANK = re.compile(R"\s+")
+RE_ARROW = re.compile(R"->")
 
 class Token(object):
     def __init__(self, repr_str: str) -> None:
@@ -27,6 +28,7 @@ LPAREN = Token("LPAREN")
 RPAREN = Token("RPAREN")
 UNIT = Token("UNIT")
 DOT = Token("DOT")
+ARROW = Token("ARROW")
 
 class VAR(Token):
     def __init__(self, name: str) -> None:
@@ -51,6 +53,7 @@ def lex(s: str) -> List[Token]:
             (RE_LPAREN, lambda toks, r: toks.append(LPAREN)),
             (RE_RPAREN, lambda toks, r: toks.append(RPAREN)),
             (RE_UNIT, lambda toks, r: toks.append(UNIT)),
+            (RE_ARROW, lambda toks, r: toks.append(ARROW)),
             (RE_BLANK, lambda toks, r: None),
         ]
 

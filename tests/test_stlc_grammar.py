@@ -1,7 +1,7 @@
-
 from slang.stlc.grammar import mk_grammar
-from slang.stlc.syntax import VarStr, Lam, App
-from slang.lexer import lex
+from slang.stlc import grammar_ty as ty
+from slang.stlc.syntax import UnitTy, VarStr, Lam, App
+from slang.stlc.lexer import lex
 from slang.slr import apply_tranx, print_parsed
 from unittest.case import TestCase
 
@@ -19,4 +19,5 @@ class TestSTLCGrammar(TestCase):
         g = mk_grammar()
         toks = lex("(\\x.x x)(\\x.x x)")
         res = g.parse(iter(toks))
-        assert apply_tranx(res) == App(Lam("x", App(VarStr('x'), VarStr('x'))), Lam("x", App(VarStr('x'), VarStr('x'))))
+        t_u = UnitTy()
+        assert apply_tranx(res) == App(Lam("x", t_u, App(VarStr('x'), VarStr('x'))), Lam("x", t_u, App(VarStr('x'), VarStr('x'))))
