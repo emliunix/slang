@@ -59,6 +59,8 @@ def to_dbi(t: Term):
             term = go(t.term)
             vars.pop()
             return Lam(t.var, t.ty, term)
+        elif isinstance(t, Unit):
+            return t
         else:
             raise Exception(F"Unknown term type: {type(t)}")
     return go(t)
