@@ -1,5 +1,4 @@
 from slang.stlc.grammar import mk_grammar
-from slang.stlc import grammar_ty as ty
 from slang.stlc.syntax import Arrow, Unit, UnitTy, VarStr, Lam, App
 from slang.stlc.lexer import lex
 from slang.slr import apply_tranx, print_parsed
@@ -22,12 +21,3 @@ class TestSTLCGrammar(TestCase):
         U = UnitTy()
         u = Unit()
         assert apply_tranx(res) == App(Lam("x", Arrow(U, U), App(VarStr('x'), u)), Lam("x", U, VarStr('x')))
-
-    def test_ty(self):
-        g = ty.mk_grammar()
-        # g.print_states()
-        # g.print_parsing_table()
-        toks = lex("(0->0)->0->0")
-        res = g.parse(iter(toks))
-        U = UnitTy()
-        assert apply_tranx(res) == Arrow(Arrow(U, U), Arrow(U, U))

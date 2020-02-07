@@ -1,5 +1,5 @@
 import unittest
-from slang.lexer import (
+from slang.stlc.lexer import (
     lex,
     Token, LAM, DOT, COLON, LPAREN, RPAREN, VAR
 )
