@@ -1,4 +1,6 @@
-from typing import Union, Tuple
+from __future__ import annotations
+
+from typing import Callable, Union, Tuple
 from dataclasses import dataclass
 from .syntax import Arrow, Ty, Term, Lam, Unit, UnitTy, Var, App
 
@@ -121,3 +123,89 @@ def evaluate(t: Term, env: Env) -> Term:
             t = eval1(t)
     except StopEvalException:
         return t
+
+class Kont(object):
+    pass
+
+class CEKVal(object):
+    pass
+
+CEKEnv = Callable[[int], CEKVal]
+
+class Top(Kont):
+    pass
+
+@dataclass
+class Arg(Kont):
+    t: Term
+    e: CEKEnv
+    k: Kont
+
+@dataclass
+class Fun(Kont):
+    b: Term
+    e: CEKEnv
+    k: Kont
+
+@dataclass
+class Closure(CEKVal):
+    f: Lam
+    e: CEKEnv
+
+@dataclass
+class Atom(CEKVal):
+    v: Term
+
+def extend(v: CEKVal, e: CEKEnv) -> CEKEnv:
+    def _go(i: int):
+        if i == 0:
+            return v
+        else:
+            return e(i - 1)
+    return _go
+
+def EmptyCEKEnv(i: int) -> CEKVal:
+    raise EvalException()
+
+class CEK(object):
+    c: Term
+    e: CEKEnv
+    k: Kont
+
+    def __init__(self, c: Term) -> None:
+        self.c = c
+        self.e = EmptyCEKEnv
+        self.k = Top()
+
+    def step(self):
+        (c, e, k) = (self.c, self.e, self.k)
+        if isinstance(c, Var):
+            v = e(c.i)
+            if isinstance(v, Closure):
+                self.c = v.f
+                self.e = v.e
+            elif isinstance(v, Atom):
+                self.c = v.v
+        elif isinstance(c, App):
+            self.c = c.f
+            self.k = Arg(c.arg, e, k)
+        elif isinstance(c, Lam) and isinstance(k, Arg):
+            self.c = k.t
+            self.e = k.e
+            self.k = Fun(c.term, e, k.k)
+        else:
+            if isinstance(k, Top):
+                raise StopEvalException()
+            elif isinstance(k, Fun):
+                self.c = k.b
+                if isinstance(c, Lam):
+                    v = Closure(c, e)
+                else:
+                    v = Atom(c)
+                self.e = extend(v, k.e)
+                self.k = k.k
+
+    # def __str__(self):
+    #     c_str = str(self.c)
+    #     e_str = "Env"
+    #     k_str = str(self.k)
