@@ -10,7 +10,7 @@ from functools import total_ordering
 class Symbol(object):
     def __init__(self, s: str) -> None:
         self.s = s
-    
+
     def __str__(self) -> str:
         return self.s
 
